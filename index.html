@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focusen</title>
+    <style>
+        :root {
+            --bg-color: #faf8f5;
+            --text-color: #111111;
+            --header-bg: rgba(255, 255, 255, 0.75);
+            --header-border: rgba(0, 0, 0, 0.06);
+            --accent-color: #ff4500;
+            --accent-hover: #e03d00;
+            --secondary-btn: #ffffff;
+            --secondary-text: #555555;
+            --card-bg: #ffffff;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            --mac-bg: #f3f3f3;
+            --mac-sidebar: #e8e8e8;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #f5f5f5;
+            --header-bg: rgba(24, 24, 24, 0.75);
+            --header-border: rgba(255, 255, 255, 0.08);
+            --secondary-btn: #222222;
+            --secondary-text: #bbbbbb;
+            --card-bg: #1e1e1e;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            --mac-bg: #1a1a1a;
+            --mac-sidebar: #252525;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            padding-bottom: 100px;
+        }
+
+        /* Floating Header Capsule */
+        header {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 950px;
+            background: var(--header-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--header-border);
+            border-radius: 40px;
+            padding: 10px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .logo-container img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--secondary-text);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            color: var(--text-color);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .lang-select, .theme-toggle {
+            background: transparent;
+            border: 1px solid var(--header-border);
+            color: var(--text-color);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            outline: none;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 16px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .btn-started {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+        .btn-started:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Hero Section */
+        .hero {
+            max-width: 800px;
+            margin: 180px auto 60px auto;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: 3.8rem;
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+            min-height: 140px;
+        }
+
+        .hero h1 span.italic {
+            font-family: Georgia, serif;
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .hero p.description {
+            font-size: 1.25rem;
+            color: var(--secondary-text);
+            line-height: 1.5;
+            max-width: 650px;
+            margin: 0 auto 35px auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            background: #111111;
+            color: #ffffff;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        [data-theme="dark"] .btn-primary {
+            background: #ffffff;
+            color: #111111;
+        }
+
+        .btn-secondary {
+            background: var(--secondary-btn);
+            color: var(--text-color);
+            border: 1px solid var(--header-border);
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .hero .sub-text {
+            font-size: 0.85rem;
+            color: var(--secondary-text);
+            opacity: 0.8;
+        }
+
+        /* macOS Window Mockup */
+        .mockup-container {
+            max-width: 900px;
+            margin: 0 auto 100px auto;
+            padding: 0 20px;
+        }
+
+        .mac-window {
+            background: var(--mac-bg);
+            border: 1px solid var(--header-border);
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 450px;
+        }
+
+        .mac-titlebar {
+            height: 40px;
+            background: var(--mac-sidebar);
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            border-bottom: 1px solid var(--header-border);
+            position: relative;
+        }
+
+        .mac-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .mac-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27c93f; }
+
+        .mac-address-bar {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            border: 1px solid var(--header-border);
+            font-size: 0.8rem;
+            padding: 4px 40px;
+            border-radius: 6px;
+            color: var(--secondary-text);
+        }
+
+        .mac-body {
+            display: flex;
+            flex: 1;
+        }
+
+        .mac-sidebar {
+            width: 200px;
+            background: var(--mac-sidebar);
+            border-right: 1px solid var(--header-border);
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sidebar-item {
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-item.active {
+            background: var(--header-border);
+            font-weight: 600;
+        }
+
+        .mac-content {
+            flex: 1;
+            background: var(--card-bg);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .focus-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 4px solid var(--header-border);
+            border-top-color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            animation: spin 4s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .focus-circle span {
+            animation: counter-spin 4s linear infinite;
+        }
+        @keyframes counter-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(-360deg); }
+        }
+
+        /* Info Sections */
+        .section {
+            max-width: 900px;
+            margin: 0 auto 100px auto;
+            padding: 0 20px;
+        }
+
+        .section h2 {
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .features-list {
+            list-style: none;
+            max-width: 650px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .features-list li {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--header-border);
+            box-shadow: var(--card-shadow);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .features-list li::before {
+            content: "-";
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Pricing Cards */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            max-width: 750px;
+            margin: 0 auto;
+        }
+
+        .price-card {
+            background: var(--card-bg);
+            border: 1px solid var(--header-border);
+            border-radius: 16px;
+            padding: 40px 30px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .price-card.featured {
+            border-color: var(--accent-color);
+        }
+
+        .price-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .price-card .cost {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+
+        .price-features {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 35px;
+            flex: 1;
+        }
+
+        .price-features li {
+            font-size: 1rem;
+            color: var(--secondary-text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .price-features li::before {
+            content: "•";
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .price-btn {
+            background: var(--secondary-btn);
+            color: var(--text-color);
+            border: 1px solid var(--header-border);
+            padding: 12px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .price-card.featured .price-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                width: 95%;
+                padding: 10px 16px;
+            }
+            nav {
+                display: none;
+            }
+            .hero h1 {
+                font-size: 2.5rem;
+                min-height: auto;
+            }
+            .hero p.description {
+                font-size: 1.1rem;
+            }
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+            .mac-sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <a href="#" class="logo-container">
+            <img src="logo.png" alt="Focusen" onerror="this.style.display='none';">
+            <span>Focusen</span>
+        </a>
+        <nav>
+            <a href="#features" data-i18n="nav-features">Features</a>
+            <a href="#how-it-works" data-i18n="nav-how">How it works</a>
+            <a href="#pricing" data-i18n="nav-pricing">Pricing</a>
+        </nav>
+        <div class="header-controls">
+            <select class="lang-select" id="langSelect">
+                <option value="en">EN</option>
+                <option value="ru">RU</option>
+            </select>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme" data-i18n="theme-btn">
+                Light
+            </button>
+            <a href="#" class="btn-started" data-i18n="get-started">Get started</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1 id="typing-text"></h1>
+        <p class="description" data-i18n="hero-desc">
+            Focusen helps when you’re on peak. Stay focused at home, work, with friends or alone. Check-in days, streaks, pressure, all your data on your device.
+        </p>
+        <div class="cta-buttons">
+            <a href="#" class="btn-primary" data-i18n="btn-start">Start tracking free -></a>
+            <a href="#" class="btn-secondary" data-i18n="btn-login">Sign In</a>
+        </div>
+        <p class="sub-text" data-i18n="hero-sub">No credit card • No long registration • Data secure</p>
+    </section>
+
+    <!-- App Mockup Section -->
+    <section class="mockup-container" id="features">
+        <div class="mac-window">
+            <div class="mac-titlebar">
+                <div class="mac-dots">
+                    <div class="mac-dot dot-red"></div>
+                    <div class="mac-dot dot-yellow"></div>
+                    <div class="mac-dot dot-green"></div>
+                </div>
+                <div class="mac-address-bar">focusen.app/dashboard</div>
+            </div>
+            <div class="mac-body">
+                <div class="mac-sidebar">
+                    <div class="sidebar-item active" data-i18n="mac-focus">Focus</div>
+                    <div class="sidebar-item" data-i18n="mac-spaces">Spaces</div>
+                    <div class="sidebar-item" data-i18n="mac-analytics">Analytics</div>
+                    <div class="sidebar-item" data-i18n="mac-settings">Settings</div>
+                </div>
+                <div class="mac-content">
+                    <div class="focus-circle"><span>25:00</span></div>
+                    <h4 style="margin-bottom: 8px;" data-i18n="mac-session">Deep Work Session</h4>
+                    <p style="font-size: 0.9rem; color: var(--secondary-text);" data-i18n="mac-tip">Stay focused, your data is isolated and safe.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="section" id="how-it-works">
+        <h2 data-i18n="how-title">How it works</h2>
+        <p style="text-align: center; margin-bottom: 40px; color: var(--secondary-text); font-size: 1.2rem;" data-i18n="how-subtitle">
+            Focusen helps you stay focused even when you are working.
+        </p>
+        <ul class="features-list">
+            <li data-i18n="feat-1">Sorting and task distribution</li>
+            <li data-i18n="feat-2">Time-based reminders</li>
+            <li data-i18n="feat-3">Blocking notifications from restricted applications</li>
+            <li data-i18n="feat-4">Minimalist, distraction-free interface</li>
+            <li data-i18n="feat-5">Creating customized spaces tailored to your needs</li>
+        </ul>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="section" id="pricing">
+        <h2 data-i18n="pricing-title">Pricing</h2>
+        <div class="pricing-grid">
+            <!-- Basic -->
+            <div class="price-card">
+                <h3 data-i18n="plan-basic-title">Basic Set</h3>
+                <div class="cost" data-i18n="plan-basic-price">Free</div>
+                <ul class="price-features">
+                    <li data-i18n="plan-basic-f1">Focusing features</li>
+                    <li data-i18n="plan-basic-f2">3 workspaces</li>
+                    <li data-i18n="plan-basic-f3">All core functionality</li>
+                </ul>
+                <button class="price-btn" data-i18n="plan-btn">Choose Plan</button>
+            </div>
+            <!-- Advanced -->
+            <div class="price-card featured">
+                <h3 data-i18n="plan-adv-title">Advanced Set</h3>
+                <div class="cost" data-i18n="plan-adv-price">$10 <span style="font-size: 1rem; font-weight: normal;">/ mo</span></div>
+                <ul class="price-features">
+                    <li data-i18n="plan-adv-f1">Extended extensions</li>
+                    <li data-i18n="plan-adv-f2">AI Assistant</li>
+                    <li data-i18n="plan-adv-f3">Dynamic Island customization</li>
+                </ul>
+                <button class="price-btn" data-i18n="plan-btn">Choose Plan</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Script -->
+    <script>
+        // Translations Dictionary
+        const translations = {
+            en: {
+                "nav-features": "Features",
+                "nav-how": "How it works",
+                "nav-pricing": "Pricing",
+                "get-started": "Get started",
+                "hero-desc": "Focusen helps when you’re on peak. Stay focused at home, work, with friends or alone. Check-in days, streaks, pressure, all your data on your device.",
+                "btn-start": "Start tracking free ->",
+                "btn-login": "Sign In",
+                "hero-sub": "No credit card • No long registration • Data secure",
+                "mac-focus": "Focus",
+                "mac-spaces": "Spaces",
+                "mac-analytics": "Analytics",
+                "mac-settings": "Settings",
+                "mac-session": "Deep Work Session",
+                "mac-tip": "Stay focused, your data is isolated and safe.",
+                "how-title": "How it works",
+                "how-subtitle": "Focusen helps you stay focused even when you are working.",
+                "feat-1": "Sorting and task distribution",
+                "feat-2": "Time-based reminders",
+                "feat-3": "Blocking notifications from restricted applications",
+                "feat-4": "Minimalist, distraction-free interface",
+                "feat-5": "Creating customized spaces tailored to your needs",
+                "pricing-title": "Pricing",
+                "plan-basic-title": "Basic Set",
+                "plan-basic-price": "Free",
+                "plan-basic-f1": "Focusing features",
+                "plan-basic-f2": "3 workspaces",
+                "plan-basic-f3": "All core functionality",
+                "plan-adv-title": "Advanced Set",
+                "plan-adv-price": "$10 / mo",
+                "plan-adv-f1": "Extended extensions",
+                "plan-adv-f2": "AI Assistant",
+                "plan-adv-f3": "Dynamic Island customization",
+                "plan-btn": "Choose Plan",
+                "theme-light": "Light",
+                "theme-dark": "Dark"
+            },
+            ru: {
+                "nav-features": "Возможности",
+                "nav-how": "Как это работает",
+                "nav-pricing": "Цены",
+                "get-started": "Начать",
+                "hero-desc": "Focusen помогает вам быть фокусированным даже когда вы на пике. Оставайтесь собранными дома, на работе, с друзьями или наедине. Дни чек-инов, страйки, нагрузка — все данные на вашем устройстве.",
+                "btn-start": "Начать бесплатно ->",
+                "btn-login": "Войти",
+                "hero-sub": "Без кредитных карт • Без долгой регистрации • Данные защищены",
+                "mac-focus": "Фокус",
+                "mac-spaces": "Пространства",
+                "mac-analytics": "Аналитика",
+                "mac-settings": "Настройки",
+                "mac-session": "Сессия глубокой работы",
+                "mac-tip": "Оставайтесь сфокусированными, ваши данные изолированы и в безопасности.",
+                "how-title": "Как это работает",
+                "how-subtitle": "Focusen помогает вам быть фокусированным даже когда вы работаете. Он помогает вам в:",
+                "feat-1": "Сортировка и распределение задач",
+                "feat-2": "Напоминания по времени",
+                "feat-3": "Блокировка уведомлений от заблокированных приложений",
+                "feat-4": "Минималистичный не отвлекающий интерфейс",
+                "feat-5": "Создание пространств под ваши нужды",
+                "pricing-title": "Цены",
+                "plan-basic-title": "Базовый набор",
+                "plan-basic-price": "Бесплатно",
+                "plan-basic-f1": "Функции фокусирования",
+                "plan-basic-f2": "3 рабочих пространства",
+                "plan-basic-f3": "Все основные функции",
+                "plan-adv-title": "Расширенный набор",
+                "plan-adv-price": "10$ / месяц",
+                "plan-adv-f1": "Расширения",
+                "plan-adv-f2": "ИИ помощник",
+                "plan-adv-f3": "Кастомизация динамического острова приложения",
+                "plan-btn": "Выбрать план",
+                "theme-light": "Светлая",
+                "theme-dark": "Тёмная"
+            }
+        };
+
+        const typingLines = {
+            en: ["Track your energy", "Master your day."],
+            ru: ["Отслеживай энергию", "Управляй своим днем."]
+        };
+
+        let currentLang = 'en';
+        let typingTimeout;
+
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            updateThemeButtonText(newTheme);
+        });
+
+        function updateThemeButtonText(theme) {
+            themeToggle.textContent = theme === 'dark' ? translations[currentLang]['theme-dark'] : translations[currentLang]['theme-light'];
+        }
+
+        // Language Switcher Functionality
+        const langSelect = document.getElementById('langSelect');
+        langSelect.addEventListener('change', (e) => {
+            currentLang = e.target.value;
+            updateLanguage(currentLang);
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            updateThemeButtonText(currentTheme);
+            startTypingAnimation();
+        });
+
+        function updateLanguage(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    element.innerHTML = translations[lang][key];
+                }
+            });
+        }
+
+        // Typing Animation Logic
+        const h1Element = document.getElementById('typing-text');
+        
+        function startTypingAnimation() {
+            clearTimeout(typingTimeout);
+            h1Element.innerHTML = '';
+            
+            const lines = typingLines[currentLang];
+            let lineIndex = 0;
+            let charIndex = 0;
+            
+            function type() {
+                if (lineIndex === 0) {
+                    if (charIndex < lines[0].length) {
+                        h1Element.innerHTML += lines[0].charAt(charIndex);
+                        charIndex++;
+                        typingTimeout = setTimeout(type, 70);
+                    } else {
+                        h1Element.innerHTML += '<br><span class="italic"></span>';
+                        lineIndex++;
+                        charIndex = 0;
+                        typingTimeout = setTimeout(type, 400);
+                    }
+                } else if (lineIndex === 1) {
+                    const italicSpan = h1Element.querySelector('.italic');
+                    if (charIndex < lines[1].length) {
+                        italicSpan.innerHTML += lines[1].charAt(charIndex);
+                        charIndex++;
+                        typingTimeout = setTimeout(type, 70);
+                    }
+                }
+            }
+            type();
+        }
+
+        // Initialize
+        updateLanguage(currentLang);
+        updateThemeButtonText('light');
+        startTypingAnimation();
+    </script>
+</body>
+</html>
